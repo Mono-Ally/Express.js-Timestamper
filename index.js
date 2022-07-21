@@ -38,7 +38,7 @@ app.get("/api/:date",(req,res,next)=>{
     //utc validity checker
   else if (moment(date, 'YYYY-MM-DD', true).isValid()){
     res.json({
-    unix:moment(date,'YYYY-MM-DD',true).format().unix(),
+    unix:moment.utc(date,'YYYY-MM-DD').unix(),
       utc: moment(date, 'YYYY-MM-DD', true).format()
   })
   }
