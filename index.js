@@ -25,7 +25,7 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/:date",(req,res,next)=>{
+app.get("/api/:date",(req,res,next)=>{
   let date = req.params.date;
   console.log("the requested endpoint is "+date);
 //unix validity checker
