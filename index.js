@@ -4,8 +4,7 @@
 // init project
 var express = require('express');
 var app = express();
-var moment = require('moment');
-moment().format(); 
+
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
@@ -25,34 +24,54 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:date",(req,res,next)=>{
-  let date = req.params.date;
-  console.log("the requested endpoint is "+date);
-//unix validity checker
-  if (moment(date, 'X', true).isValid()){
-    console.log(date+" is valid unix");
-    console.log(moment(date, 'X', true).format("ddd, D MMM YYYY")+" 00:00:00 GMT");
-    res.json({
-    unix:date,
-      utc: moment(date, 'X', true).format("ddd, D MMM YYYY") +" 00:00:00 GMT"
-  })
-      } 
-    //utc validity checker
-  else if (moment(date, 'YYYY-MM-DD', true).isValid()){
-    console.log(date+" is valid utc");
-    console.log(moment.utc(date,'YYYY-MM-DD').unix() * 1000);
-    res.json({
-    unix: moment.utc(date,'YYYY-MM-DD').unix()* 1000,
-      utc: moment(date, 'YYYY-MM-DD', true).format("ddd, D MMM YYYY") + " 00:00:00 GMT"
-  })
+app.get("/api/", function (req, res) {
+  res.json(
+    {
+    'unix': Date.now(),
+     'utc': Date()
+    }
+    );
+});
+
+
+
+app.get("/api/", function (req, res) {
+  res.json(
+    {
+      'unix': Date.now(),
+       'utc': Date()
+    }
+      );
+});
+
+app.get("/api/:d", (req, res) => {
+  let dateString = req.params.d;
+
+  if (!isNaN(Date.parse(dateString))) {
+    let dateObject = new Date(dateString);
+    res.json(
+      {
+         unix: dateObject.valueOf(),
+          utc: dateObject.toUTCString() 
+      }
+        );
+  } else if (/\d{5,}/.test(dateString)) {
+      let dateInt = parseInt(dateString);
+      res.json(
+        {
+           unix: dateInt,
+            utc: new Date(dateInt).toUTCString() 
+        }
+          );
+  } else {
+    res.json(
+      {
+         error: "Invalid Date" 
+      }
+        );
   }
-  else {
-    console.log(date+" is invalid");
-    res.json({
-    error:"Invalid Date"
-  })
-  }
-  });
+
+});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
