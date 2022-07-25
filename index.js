@@ -30,19 +30,24 @@ app.get("/api/:date",(req,res,next)=>{
   console.log("the requested endpoint is "+date);
 //unix validity checker
   if (moment(date, 'X', true).isValid()){
+    console.log(date+" is valid unix");
+    console.log(moment(date, 'X', true).format("ddd, D MMM YYYY")+" 00:00:00 GMT");
     res.json({
     unix:date,
-      utc: moment(date, 'X', true).format()
+      utc: moment(date, 'X', true).format("ddd, D MMM YYYY") +" 00:00:00 GMT"
   })
       } 
     //utc validity checker
   else if (moment(date, 'YYYY-MM-DD', true).isValid()){
+    console.log(date+" is valid utc");
+    console.log(moment.utc(date,'YYYY-MM-DD').unix() * 1000);
     res.json({
-    unix:moment.utc(date,'YYYY-MM-DD').unix(),
-      utc: moment(date, 'YYYY-MM-DD', true).format()
+    unix: moment.utc(date,'YYYY-MM-DD').unix()* 1000,
+      utc: moment(date, 'YYYY-MM-DD', true).format("ddd, D MMM YYYY") + " 00:00:00 GMT"
   })
   }
   else {
+    console.log(date+" is invalid");
     res.json({
     error:"Invalid Date"
   })
